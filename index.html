@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Master</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ Typing Master</h1>
+            <p class="subtitle">Master your typing skills with various challenges</p>
+        </header>
+
+        <!-- Authentication Section -->
+        <div class="auth-section" id="authSection">
+            <div class="auth-toggle">
+                <button class="auth-btn active" onclick="showLogin()">Login</button>
+                <button class="auth-btn" onclick="showRegister()">Register</button>
+                <button class="auth-btn" onclick="showGuest()">Continue as Guest</button>
+            </div>
+
+            <div class="auth-form" id="authForm">
+                <input type="text" id="username" placeholder="Username">
+                <input type="password" id="password" placeholder="Password">
+                <button onclick="handleAuth()">Login</button>
+            </div>
+
+            <div class="user-info" id="userInfo" style="display: none;">
+                <span id="welcomeText"></span>
+                <button onclick="logout()" class="logout-btn">Logout</button>
+            </div>
+        </div>
+
+        <!-- Game Section -->
+        <div class="game-section">
+            <!-- Mode Selection -->
+            <div class="mode-selector">
+                <div class="mode-btn active" onclick="selectMode('time-race')">
+                    <h3>⏱️ Time Race</h3>
+                    <p>Type as much as you can within time limit</p>
+                </div>
+                <div class="mode-btn" onclick="selectMode('bot-race')">
+                    <h3>🤖 Bot Race</h3>
+                    <p>Race against AI typing at set speed</p>
+                </div>
+                <div class="mode-btn" onclick="selectMode('accuracy')">
+                    <h3>🎯 Accuracy Test</h3>
+                    <p>Focus on precise typing</p>
+                </div>
+                <div class="mode-btn" onclick="selectMode('challenge')">
+                    <h3>🏆 Challenge Friend</h3>
+                    <p>Send typing challenges to friends</p>
+                </div>
+            </div>
+
+            <!-- Settings -->
+            <div class="settings">
+                <div class="setting-group">
+                    <label>Time Limit</label>
+                    <select id="timeLimit">
+                        <option value="30">30 seconds</option>
+                        <option value="60" selected>60 seconds</option>
+                        <option value="120">2 minutes</option>
+                        <option value="300">5 minutes</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>Bot Speed (WPM)</label>
+                    <select id="botSpeed">
+                        <option value="50">50 WPM</option>
+                        <option value="100" selected>100 WPM</option>
+                        <option value="150">150 WPM</option>
+                        <option value="200">200 WPM</option>
+                        <option value="300">300 WPM</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>Text Type</label>
+                    <select id="textType">
+                        <option value="quotes">Famous Quotes</option>
+                        <option value="literature">Literature</option>
+                        <option value="technical">Technical Text</option>
+                        <option value="random">Random Words</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Room Code Section (for friend challenges) -->
+            <div class="room-section" id="roomSection" style="display: none;">
+                <div class="room-controls">
+                    <input type="text" id="roomCode" placeholder="Enter room code">
+                    <button onclick="joinRoom()">Join Room</button>
+                    <button onclick="createRoom()">Create Room</button>
+                </div>
+                <div id="roomInfo"></div>
+            </div>
+
+            <!-- Typing Area -->
+            <div class="typing-area">
+                <div class="text-display" id="textDisplay">
+                    Click "Start Game" to begin your typing test!
+                </div>
+
+                <div class="bot-cursor" id="botCursor" style="display: none;"></div>
+
+                <textarea
+                    id="userInput"
+                    placeholder="Start typing here..."
+                    disabled
+                    rows="4"
+                ></textarea>
+            </div>
+
+            <!-- Game Controls -->
+            <div class="game-controls">
+                <button class="control-btn start-btn" onclick="startGame()">Start Game</button>
+                <button class="control-btn" onclick="resetGame()" disabled id="resetBtn">Reset</button>
+                <button class="control-btn" onclick="newText()" disabled id="newTextBtn">New Text</button>
+            </div>
+
+            <!-- Stats Display -->
+            <div class="stats-display" id="statsDisplay">
+                <div class="stat-item">
+                    <span class="stat-label">WPM:</span>
+                    <span class="stat-value" id="wpmValue">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Accuracy:</span>
+                    <span class="stat-value" id="accuracyValue">100%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Time:</span>
+                    <span class="stat-value" id="timeValue">0s</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Errors:</span>
+                    <span class="stat-value" id="errorsValue">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection" style="display: none;">
+            <h2>🎉 Game Complete!</h2>
+            <div class="final-stats" id="finalStats"></div>
+            <div class="results-actions">
+                <button onclick="saveScore()">Save Score</button>
+                <button onclick="shareResult()">Share Result</button>
+                <button onclick="playAgain()">Play Again</button>
+            </div>
+        </div>
+
+        <!-- Leaderboard Section -->
+        <div class="leaderboard-section">
+            <h2>🏆 Leaderboard</h2>
+            <div class="leaderboard-tabs">
+                <button class="tab-btn active" onclick="showLeaderboard('personal')">Personal Best</button>
+                <button class="tab-btn" onclick="showLeaderboard('global')">Global</button>
+                <button class="tab-btn" onclick="showLeaderboard('friends')">Friends</button>
+            </div>
+            <div class="leaderboard-content" id="leaderboardContent">
+                <div class="leaderboard-item">
+                    <span class="rank">#1</span>
+                    <span class="player">Guest</span>
+                    <span class="score">0 WPM</span>
+                    <span class="date">Start playing to see scores!</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Challenge Section -->
+        <div class="challenge-section" id="challengeSection" style="display: none;">
+            <h2>🎯 Active Challenges</h2>
+            <div class="challenge-list" id="challengeList">
+                <p>No active challenges. Login to send challenges to friends!</p>
+            </div>
+            <div class="challenge-creator">
+                <input type="text" id="challengeFriend" placeholder="Friend's username">
+                <button onclick="sendChallenge()">Send Challenge</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
